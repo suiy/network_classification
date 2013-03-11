@@ -1,3 +1,4 @@
+By Yuan Sui
 #delete imcomplete data: no ip, no important imformation,incorrect ip address
 import csv
 import string
