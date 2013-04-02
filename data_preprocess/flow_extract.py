@@ -3,6 +3,7 @@ import sys
 truthf=open("1.csv",'r')
 resultf=open("result.csv",'w+')
 truthDic={}
+##remove the first line of groundtruth
 for line in truthf:
 	temp=line.split(',')
 	index=[]
@@ -21,7 +22,7 @@ for line in truthf:
 	data_s=','.join(data)
 	if truthDic.has_key(index_s):
 		tmp=truthDic[index_s]
-		truthDic[index_s]=tmp+';'+data_s[:-1]#for those flows with the same key, I put the values in a semicolon seperated string
+		truthDic[index_s]=tmp+';'+data_s[:-1]#for those flows with the same key, I put the values in a semicolon separated string
 		continue
 	truthDic[index_s]=data_s[:-1]#put all the data of groundtruth in a dictionary
 #print index_s
