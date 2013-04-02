@@ -4,6 +4,12 @@ packet_avgf=open('flow_avg.csv','w+')
 packet_maxf=open('flow_max.csv','w+')
 packet_minf=open('flow_min.csv','w+')
 packet_firstf=open('flow_first.csv','w+')
+packet_avgf.write("sip,dip,sport,dport,time,app,protocol,statistics\n")
+packet_maxf.write("sip,dip,sport,dport,time,app,protocol,statistics\n")
+packet_minf.write("sip,dip,sport,dport,time,app,protocol,statistics\n")
+packet_firstf.write("sip,dip,sport,dport,time,app,protocol,statistics\n")
+
+
 
 
 for line in flowf:
@@ -29,7 +35,7 @@ for line in flowf:
 		if float(packet)<packet_min:
 			packet_min=float(packet)
 
-	for packet in temp[0:6]:
+	for packet in temp[0:7]:
 		line_avg+=packet+','
 	line_max=line_avg
 	line_min=line_avg
@@ -37,7 +43,10 @@ for line in flowf:
 	line_avg+=str(packet_avg)+'\n'
 	line_max+=str(packet_max)+'\n'
 	line_min+=str(packet_min)+'\n'
-	line_first+=str(temp[7])+'\n'
+	if len(temp)==8:
+		line_first+=str(temp[7])
+	else:
+		line_first+=str(temp[7])+'\n'
 	packet_avgf.write(line_avg)
 	packet_maxf.write(line_max)
 	packet_minf.write(line_min)
