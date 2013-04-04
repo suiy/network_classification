@@ -10,8 +10,6 @@ packet_minf.write("sip,dip,sport,dport,time,app,protocol,statistics\n")
 packet_firstf.write("sip,dip,sport,dport,time,app,protocol,statistics\n")
 
 
-
-
 for line in flowf:
 	temp=line.split(',')
 	packet_avg=0.0
@@ -21,6 +19,9 @@ for line in flowf:
 	line_max=""
 	line_min=""
 	line_first=""
+	if len(temp)==7:
+		print temp
+		continue
 	##average
 	for packet in temp[7:]:
 		packet_avg+=float(packet)

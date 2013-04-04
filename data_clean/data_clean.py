@@ -55,7 +55,8 @@ def read_write(file,fileout):
 			#continue 
 
 		#fileout.write(line)
-
+	fileout.close()
+	filein.close()
 def check_ip(ip):
 	ip_list = list()
 	ip_list = ip.split('.')
@@ -78,6 +79,8 @@ def re_print(file,fileout):
 			s=''
 			s='%s,%s,%s,%s,%s,%s,%s,%s\n' %(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[index])
 			fileout.write(s)
+	fileout.close()
+	filein.close()
 
 def print_app(file):
 	filein = open(file,'r')
@@ -91,6 +94,7 @@ def print_app(file):
 		else:
 			app_list.append(row[5])
 			print row[5]
+	filein.close()
 
 re_print('flow.csv','AfterClean1.csv')
 #print_app('AfterClean1.csv')
