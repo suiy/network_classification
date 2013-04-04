@@ -6,8 +6,7 @@ resultf=open("flow.csv",'w+')
 truthDic={}
 ##remove the first line of groundtruth
 truthf.readline()
-lines=truthf.read().splitlines()
-for line in lines:
+for line in truthf:
 	temp=line.split(':')
 	index=[]
 	data=[]
@@ -19,46 +18,44 @@ for line in lines:
 	data.append(temp[6])#app
 	data.append(temp[7])#protocol
 	index_s=','.join(index)
+	data_s=','.join(data)
 	if truthDic.has_key(index_s):
 		tmp=truthDic[index_s]
-		tmp.append(data)
-		truthDic[index_s]=tmp#for those flows with the same key, I put the values in a semicolon separated string
+		truthDic[index_s]=tmp+';'+data_s[:-1]#for those flows with the same key, I put the values in a semicolon separated string
 		continue
-	truthDic[index_s]=[data]#put all the data of groundtruth in a dictionary
+	truthDic[index_s]=data_s[:-1]#put all the data of groundtruth in a dictionary
 #print index_s #for test whether the dictionary is correctly constructed
 #print truthDic[index_s] 
 
 def modify_value(time_s,truthdata,packet_size):#param: time, groundtruth data, current packet size
 	ptime=float(time_s)
+	multiple=truthdata.split(';')
 	index=0
 	minv=1000000
 	mini=0
-	for truth in truthdata:
-		ttime=float(truth[0])
+	for truth in multiple:
+		fields=truth.split(',')
+		ttime=float(fields[0])
 		if minv > abs(ttime-ptime) and ptime>=ttime:
 			minv=abs(ttime-ptime)
 			mini=index
 		index+=1
 	if minv ==1000000:
 		return 0
-	#temp=multiple[mini].split(',')
-	#temp.append(packet_size)
-	#multiple[mini]=','.join(temp)# this is the most time consuming part
-	truthdata[mini].append(packet_size)
-	return truthdata
+	multiple[mini]=multiple[mini]+','+packet_size
+	return ';'.join(multiple)
 def check(filein):#search for entry in groundtruth for the same sip,sport,dip and dport
 	file=open(filein,'r')
 	file.readline()#remove the first line of header
-	packet_noflow=0
-	lines=file.read().splitlines()##read all the data in memory ,really efficient
 	count=1
-	for line in lines:
+	packet_noflow=0
+	for line in file:
 		sys.stdout.write('\r%d'%count)
 		count+=1
 		temp=line.split(',')
 		index=[]
 		index.append(temp[4][1:-1])#sip
-		index.append(temp[5][1:-1])#sport
+		index.append(temp[5][1:-3])#sport
 		index.append(temp[1][1:-1])#dip
 		index.append(temp[3][1:-1])#dport
 		index_s=','.join(index)
@@ -73,14 +70,14 @@ def check(filein):#search for entry in groundtruth for the same sip,sport,dip an
 	print "\nthe number of packets which belong to no flows is "+ str(packet_noflow)
 	file.close()
 
-check("all_1.csv")
+check("allpcap.csv")
 for key,value in truthDic.items():
-	for flow in value:
-		tmp=""
-		for element in flow:
-			tmp+=element+','
-		tmp=tmp[:-1]
-		resultf.write(key+','+tmp+'\n')
+	if len(value.split(';'))==1:
+		resultf.write(key+','+value+'\n')
+		continue
+	values=value.split(';')
+	for val in values:
+		resultf.write(key+','+val+'\n')
 truthf.close()
 resultf.close()
 

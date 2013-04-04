@@ -6,8 +6,7 @@ resultf=open("flow.csv",'w+')
 truthDic={}
 ##remove the first line of groundtruth
 truthf.readline()
-lines=truthf.read().splitlines()
-for line in lines:
+for line in truthf:
 	temp=line.split(':')
 	index=[]
 	data=[]
@@ -17,7 +16,7 @@ for line in lines:
 	index.append(temp[4])#dport
 	data.append(temp[0])#time
 	data.append(temp[6])#app
-	data.append(temp[7])#protocol
+	data.append(temp[7][:-1])#protocol
 	index_s=','.join(index)
 	if truthDic.has_key(index_s):
 		tmp=truthDic[index_s]
@@ -50,15 +49,14 @@ def check(filein):#search for entry in groundtruth for the same sip,sport,dip an
 	file=open(filein,'r')
 	file.readline()#remove the first line of header
 	packet_noflow=0
-	lines=file.read().splitlines()##read all the data in memory ,really efficient
 	count=1
-	for line in lines:
+	for line in file:
 		sys.stdout.write('\r%d'%count)
 		count+=1
 		temp=line.split(',')
 		index=[]
 		index.append(temp[4][1:-1])#sip
-		index.append(temp[5][1:-1])#sport
+		index.append(temp[5][1:-3])#sport
 		index.append(temp[1][1:-1])#dip
 		index.append(temp[3][1:-1])#dport
 		index_s=','.join(index)
@@ -73,7 +71,7 @@ def check(filein):#search for entry in groundtruth for the same sip,sport,dip an
 	print "\nthe number of packets which belong to no flows is "+ str(packet_noflow)
 	file.close()
 
-check("all_1.csv")
+check("allpcap.csv")
 for key,value in truthDic.items():
 	for flow in value:
 		tmp=""
