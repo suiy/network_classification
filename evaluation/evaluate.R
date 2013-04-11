@@ -1,0 +1,8 @@
+fmeasure=c(0.767,0.307,0.88,0.338,0.376,0.913,0.925,0.95)
+precision=c(0.778,0.59,0.889,0.578,0.497,0.916,0.927,0.952)
+recall=c(0.797,0.467,0.886,0.482,0.498,0.922,0.932,0.955)
+#names(fmeasure)=c("Avg","Min","Max","One","Two","three","Four","Five")
+metric=rbind(fmeasure,precision,recall)
+bar=barplot(metric,main="Metrics for different features",names.arg=c("Avg","Min","Max","One","Two","three","Four","Five"),beside=T,xlab="Feature",ylab="F-measure",ylim=c(0.3,1.0),col=c('red','yellow','blue'),xpd=F)
+legend("top",c("f-measure","precision","recall"),fill=c('red','yellow','blue'),cex=0.6)
+text(bar,metric,labels=metric,pos=3,offset=0.1,cex=0.7)
